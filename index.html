@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy birthday</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #ff4b5c, #ffb347, #4facfe, #00f2fe);
+        background-size: 400% 400%;
+        animation: gradientBG 12s ease infinite;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+        padding: 20px;
+      }
+
+      @keyframes gradientBG {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+      }
+
+      #birthdayMsg {
+        font-size: 1.2rem;
+        opacity: 0;
+        transition: opacity 1s ease;
+        max-width: 600px;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 15px 25px;
+        background: #ff4b5c;
+        border: none;
+        border-radius: 30px;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background: #ff2e44;
+        transform: scale(1.05);
+      }
+
+      canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 999;
+      }
+
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 2rem;
+        }
+        #birthdayMsg {
+          font-size: 1rem;
+        }
+        button {
+          font-size: 1rem;
+          padding: 12px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎂 Happy Birthday 🎂</h1>
+    <button onclick="showMessage()">🎁 Klik message</button>
+    <p id="birthdayMsg"></p>
+
+    <!-- Musik -->
+    <audio
+      id="bdaySong"
+      src="https://www.bensound.com/bensound-music/bensound-happyrock.mp3"
+    ></audio>
+
+    <!-- Canvas untuk confetti -->
+    <canvas id="confetti"></canvas>
+
+    <script>
+      function showMessage() {
+        const msgEl = document.getElementById("birthdayMsg");
+
+        // Pesan utama
+        msgEl.innerHTML =
+          "selamat ulang tahun yaaa rifann, panjang umur dan sehat selalu, dipermudah segala urusannya, dilancarin rezekinya, bisa jadi pribadi yang lebih baik lagi kedepannya. semoga apapun yang kamu harapin di tahun ini bisa cepet terwujud yaaa, wish u all the best!🤩";
+        msgEl.style.opacity = 1;
+
+        // Mainkan musik
+        let audio = document.getElementById("bdaySong");
+        audio.play();
+
+        // Mulai confetti
+        startConfetti();
+
+        // Tunda kemunculan tanda pengirim
+        setTimeout(() => {
+          const fromText = document.createElement("div");
+          fromText.innerText = "From: -GhaidaFasya-";
+          fromText.style.fontSize = "18px";
+          fromText.style.fontStyle = "italic";
+          fromText.style.opacity = 0;
+          fromText.style.transition = "opacity 0.5s ease";
+          fromText.style.marginTop = "15px";
+
+          msgEl.appendChild(fromText);
+
+          // Trigger animasi fade-in
+          requestAnimationFrame(() => {
+            fromText.style.opacity = 1;
+          });
+        }, 2000);
+      }
+
+      // Confetti
+      const confettiCanvas = document.getElementById("confetti");
+      const ctx = confettiCanvas.getContext("2d");
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+
+      const confettiParticles = [];
+      const colors = ["#ff0a54", "#ff477e", "#ff85a1", "#fbb1bd", "#f9bec7"];
+
+      function ConfettiParticle() {
+        this.x = Math.random() * confettiCanvas.width;
+        this.y = Math.random() * confettiCanvas.height - confettiCanvas.height;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.size = Math.random() * 8 + 2;
+        this.speed = Math.random() * 3 + 2;
+        this.angle = Math.random() * 2 * Math.PI;
+      }
+
+      ConfettiParticle.prototype.update = function () {
+        this.y += this.speed;
+        if (this.y > confettiCanvas.height) {
+          this.y = -10;
+          this.x = Math.random() * confettiCanvas.width;
+        }
+      };
+
+      ConfettiParticle.prototype.draw = function () {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      };
+
+      function startConfetti() {
+        for (let i = 0; i < 150; i++) {
+          confettiParticles.push(new ConfettiParticle());
+        }
+        animateConfetti();
+      }
+
+      function animateConfetti() {
+        ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        for (let particle of confettiParticles) {
+          particle.update();
+          particle.draw();
+        }
+        requestAnimationFrame(animateConfetti);
+      }
+
+      window.addEventListener("resize", () => {
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+      });
+    </script>
+  </body>
+</html>
